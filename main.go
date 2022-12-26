@@ -7,11 +7,25 @@ import (
 )
 
 func main() {
-	var variable1, operat, variable2 string
+	var fscan int
+	var variable1, operat, variable2 = "", "", ""
 	fmt.Printf("Введите выражение:\n")
-	fmt.Fscan(os.Stdin, &variable1, &operat, &variable2)
-	fmt.Print("Вы ввели: " + variable1 + " " + operat + " " + variable2 + "\n")
-	checkRim(variable1, variable2, operat)
+	fscan, err := fmt.Fscan(os.Stdin, &variable1, &operat, &variable2)
+	if err == nil && fscan < 4 {
+		if variable1 != "" {
+			if variable2 != "" {
+				fmt.Print("Вы ввели: " + variable1 + " " + operat + " " + variable2 + "\n")
+				checkRim(variable1, variable2, operat)
+			} else {
+				fmt.Printf("Вывод ошибки, так как строка не является математической операцией.\n")
+			}
+		} else {
+			fmt.Printf("Вывод ошибки, так как строка не является математической операцией.\n")
+		}
+	} else {
+		fmt.Print("Вывод ошибки, так как формат математической операции не удовлетворяет заданию — два операнда и один оператор (+, -, /, *).\n")
+	}
+
 }
 
 func checkOp(nf int, nt int, op string, rim bool) {
@@ -19,33 +33,33 @@ func checkOp(nf int, nt int, op string, rim bool) {
 	case "+":
 		var reps = strconv.Itoa(nf + nt)
 		if rim {
-			fmt.Printf("Разность: " + toRim(nf+nt))
+			fmt.Printf("Сумма: " + toRim(nf+nt) + "\n")
 		} else {
-			fmt.Printf("Разность: " + reps)
+			fmt.Printf("Сумма: " + reps + "\n")
 		}
 
 	case "-":
 		var reps = strconv.Itoa(nf - nt)
 		if rim {
-			fmt.Printf("Сумма: " + toRim(nf-nt))
+			fmt.Printf("Разность: " + toRim(nf-nt))
 		} else {
-			fmt.Printf("Сумма: " + reps)
+			fmt.Printf("Разность: " + reps)
 		}
 
 	case "*":
 		var reps = strconv.Itoa(nf * nt)
 		if rim {
-			fmt.Printf("Умножение: " + toRim(nf*nt))
+			fmt.Printf("Умножение: " + toRim(nf*nt) + "\n")
 		} else {
-			fmt.Printf("Умножение: " + reps)
+			fmt.Printf("Умножение: " + reps + "\n")
 		}
 
 	case "/":
 		var reps = strconv.Itoa(nf / nt)
 		if rim {
-			fmt.Printf("Деление: " + toRim(nf/nt))
+			fmt.Printf("Деление: " + toRim(nf/nt) + "\n")
 		} else {
-			fmt.Printf("Деление: " + reps)
+			fmt.Printf("Деление: " + reps + "\n")
 		}
 	}
 }
@@ -88,7 +102,7 @@ func checkRim(nf string, nt string, op string) {
 		rim = false
 		checkOp(nums[0], nums[1], op, rim)
 	} else {
-		fmt.Printf("Не верный формат")
+		fmt.Printf("Вывод ошибки, так как используются одновременно разные системы счисления.")
 	}
 }
 
@@ -101,7 +115,6 @@ func toRim(res int) string {
 
 	if res < 0 {
 		minus = true
-		res = res * -1
 	}
 
 	if res >= 90 && res < 100 {
@@ -149,7 +162,7 @@ func toRim(res int) string {
 	}
 
 	if minus {
-		response = "-" + response
+		response = "Вывод ошибки, так как в римской системе нет отрицательных чисел."
 	}
 	return response
 }
